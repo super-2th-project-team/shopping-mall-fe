@@ -5,6 +5,7 @@ export const MainSwiperContainer = styled.div`
 		width: 100%;
 		overflow: hidden;
 		height: 83vh;
+		margin-bottom: 250px;
 	}
 
 	.swiper-wrapper {
@@ -37,7 +38,6 @@ export const SubSwiperContainer = styled.div`
 
 	.swiper {
 		width: 1320px;
-		margin-bottom: 60px;
 	}
 
 	.swiper-wrapper {
@@ -81,19 +81,4 @@ export const CategoryTitle = styled.h2`
 	font-size: 40px;
 	text-align: center;
 	margin-bottom: 70px;
-`;
-
-export const ProductSwiperContainer = styled.div`
-	width: 100%;
-	margin-bottom: 200px;
-
-	.swiper-slide > div {
-		overflow: hidden;
-		width: 100%;
-		aspect-ratio: 1 / 1;
-	}
-
-	.swiper-slide img {
-		width: 100%;
-	}
 `;
