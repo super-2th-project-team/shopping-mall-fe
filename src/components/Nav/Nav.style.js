@@ -5,6 +5,7 @@ export const Header = styled.div`
 	background: #ede1d250;
 	position: fixed;
 	z-index: 10000;
+	top: 0;
 `;
 
 export const HeaderNav = styled.div`
