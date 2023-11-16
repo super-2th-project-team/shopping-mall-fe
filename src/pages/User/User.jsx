@@ -1,4 +1,9 @@
 import styled from 'styled-components';
+import { useRef, useState } from 'react';
+import DeleteModal from './DeleteModal';
+import AddressChangeModal from './AddressChangeModal';
+import TelChangeModal from './TelChangeModal';
+import PasswordChangeModal from './PasswordChangeModal';
 
 const UserWrapper = styled.body`
 	display: flex;
@@ -44,10 +49,8 @@ const UserNamePhotoDiv = styled.div`
 `;
 
 const UserPhotoDiv = styled.div`
-	width: 63px;
-	height: 63px;
-	border-radius: 31.5px;
-	background-color: gray;
+	width: 100px;
+	height: 100px;
 `;
 
 const UserNameDiv = styled.div`
@@ -108,7 +111,7 @@ const UserItemContentDiv = styled.div`
 
 const ProductRegisterButton = styled.button`
 	width: 427px;
-	height: 42px;
+	height: 64px;
 	background-color: #5d2510;
 	font-size: 20px;
 	color: #ede1d2;
@@ -135,8 +138,82 @@ const DeleteYourAccountDiv = styled.div`
 		cursor: pointer;
 	}
 `;
+const ProfileImg = styled.img`
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+`;
+const ProfileImgDiv = styled.div`
+	width: 100px;
+	height: 100px;
+	border-radius: 50px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
+	overflow: hidden;
+	border: 2px solid var(--color-main-text);
+`;
 
+const ProfileImgLabel = styled.label`
+	margin: 5px 0 20px 0;
+	font-size: 16px;
+	color: var(--color-main-text);
+	display: inline-block;
+	cursor: pointer;
+`;
+
+const ProfileImgInput = styled.input`
+	display: none;
+`;
+
+const ModalDiv = styled.div`
+	&:hover {
+		cursor: pointer;
+	}
+`;
+const GenderDiv = styled.div`
+	width: 60px;
+	height: 30px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+`;
 const User = () => {
+	const [imgFile, setImgFile] = useState('');
+	const imgRef = useRef();
+
+	const saveImgFile = () => {
+		const file = imgRef.current.files[0];
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onloadend = () => {
+			setImgFile(reader.result);
+		};
+	};
+
+	const [deleteIsOpen, deleteSetIsOpen] = useState(false);
+	const [addressIsOpen, addressSetIsOpen] = useState(false);
+	const [telIsOpen, telSetIsOpen] = useState(false);
+	const [passwordIsOpen, passwordSetIsOpen] = useState(false);
+
+	const passwordOnClickButton = () => {
+		passwordSetIsOpen(true);
+	};
+
+	const telOnClickButton = () => {
+		telSetIsOpen(true);
+	};
+
+	const deleteOnClickButton = () => {
+		deleteSetIsOpen(true);
+	};
+
+	const addressOnClickButton = () => {
+		addressSetIsOpen(true);
+	};
+
+	const defaultUserImage = '/assets/icons/icon-user.png';
 	return (
 		<UserWrapper>
 			<AccountDiv>ACCOUNT</AccountDiv>
@@ -144,34 +221,90 @@ const User = () => {
 				<UserContent>
 					<UserItemDiv>
 						<UserNamePhotoDiv>
-							<UserPhotoDiv></UserPhotoDiv>
-							<UserNameDiv>John Smith</UserNameDiv>
+							<UserPhotoDiv>
+								<ProfileImgDiv>
+									<ProfileImg
+										src={
+											imgFile
+												? imgFile
+												: `/images/icon/user.png` || defaultUserImage
+										}
+										alt=""
+									/>
+								</ProfileImgDiv>
+								<ProfileImgLabel
+									className="signup-profileImg-label"
+									htmlFor="profileImg">
+									Image select
+								</ProfileImgLabel>
+								<ProfileImgInput
+									className="signup-profileImg-input"
+									type="file"
+									accept="image/*"
+									id="profileImg"
+									onChange={saveImgFile}
+									ref={imgRef}
+								/>
+							</UserPhotoDiv>
 						</UserNamePhotoDiv>
 						<UserLeftItemDiv>
 							<UserItemTitleDiv>address</UserItemTitleDiv>
 							<UserItemContentDiv>
 								대한민국 서울특별시 청와대 주소 123-456
 							</UserItemContentDiv>
+							<ModalDiv onClick={addressOnClickButton}>change</ModalDiv>
+							{addressIsOpen && (
+								<AddressChangeModal
+									open={addressIsOpen}
+									onClose={() => {
+										addressSetIsOpen(false);
+									}}
+								/>
+							)}
 						</UserLeftItemDiv>
 						<UserLeftItemDiv>
 							<UserItemTitleDiv>e-mail</UserItemTitleDiv>
 							<UserItemContentDiv>asdasd@asdasd.com</UserItemContentDiv>
+							<ModalDiv>change</ModalDiv>
 						</UserLeftItemDiv>
 						<UserLeftItemDiv>
 							<UserItemTitleDiv>phone number</UserItemTitleDiv>
 							<UserItemContentDiv>010-000-00000</UserItemContentDiv>
+							<ModalDiv onClick={telOnClickButton}>change</ModalDiv>
+							{telIsOpen && (
+								<TelChangeModal
+									open={telIsOpen}
+									onClose={() => {
+										telSetIsOpen(false);
+									}}
+								/>
+							)}
 						</UserLeftItemDiv>
 						<UserLeftItemDiv>
-							<UserItemTitleDiv>change password</UserItemTitleDiv>
+							<UserItemTitleDiv>password</UserItemTitleDiv>
+							<div></div>
+							<ModalDiv onClick={passwordOnClickButton}>change</ModalDiv>
+							{passwordIsOpen && (
+								<PasswordChangeModal
+									open={passwordIsOpen}
+									onClose={() => {
+										passwordSetIsOpen(false);
+									}}
+								/>
+							)}
 						</UserLeftItemDiv>
 					</UserItemDiv>
 					<UserItemDiv>
 						<UserRightItemDiv>
-							<div>POINT</div>
+							<div>name</div>
+							<div>조영상</div>
 						</UserRightItemDiv>
 						<UserRightItemDiv>
-							<div>+</div>
-							<div>10,000 coin</div>
+							<div>성별</div>
+							<GenderDiv>
+								<div>남</div>
+								<div>여</div>
+							</GenderDiv>
 						</UserRightItemDiv>
 						<UserRightItemDiv>
 							<div>ONLY SELLER</div>
@@ -182,7 +315,17 @@ const User = () => {
 				<UserContent>
 					<div>
 						<SignOutDiv>sign out</SignOutDiv>
-						<DeleteYourAccountDiv>Delete Your account</DeleteYourAccountDiv>
+						<DeleteYourAccountDiv onClick={deleteOnClickButton}>
+							Delete Your account
+						</DeleteYourAccountDiv>
+						{deleteIsOpen && (
+							<DeleteModal
+								open={deleteIsOpen}
+								onClose={() => {
+									deleteSetIsOpen(false);
+								}}
+							/>
+						)}
 					</div>
 				</UserContent>
 			</UserBox>
