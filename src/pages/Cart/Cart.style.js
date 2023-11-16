@@ -15,6 +15,7 @@ export const CartTitleH2 = styled.h3`
 export const CartContentsDiv = styled.div`
 	display: flex;
 	justify-content: space-between;
+	position: relative;
 `;
 export const CartItemsDiv = styled.div`
 	width: 65%;
@@ -37,4 +38,8 @@ export const CartItemCheckInput = styled.input`
 		justify-content: center;
 		align-items: center;
 	}
+`;
+export const CartCheckedDeleteDiv = styled.div`
+	text-align: right;
+	margin-top: 30px;
 `;
