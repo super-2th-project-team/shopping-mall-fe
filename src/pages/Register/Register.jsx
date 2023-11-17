@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import SnsIcon from '../snsIcon/SnsIcon';
+
 import {
 	AccountDiv,
 	Paragraph,
