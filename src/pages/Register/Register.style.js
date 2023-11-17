@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const RegisterWrapper = styled.body`
+export const RegisterWrapper = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -30,9 +30,7 @@ export const RegisterTitleDiv = styled.div`
 	line-height: 39.69px;
 `;
 
-export const RegisterInput = styled.input.attrs({
-	placeholderTextColor: '#6A6A6A',
-})`
+export const RegisterInput = styled.input`
 	width: 427px;
 	height: 40px;
 	margin-top: 8px;
@@ -43,6 +41,10 @@ export const RegisterInput = styled.input.attrs({
 	display: flex;
 	align-items: center;
 	justify-content: left;
+
+	::placeholder {
+		color: #6a6a6a;
+	}
 `;
 
 export const RegisterForm = styled.form`
@@ -93,6 +95,7 @@ export const Paragraph = styled.p`
 	width: 90%;
 	text-align: left;
 	font-size: 12px;
+	color: red;
 `;
 
 export const ProfileImgLabel = styled.label`

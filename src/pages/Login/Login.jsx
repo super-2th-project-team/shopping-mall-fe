@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+
 import {
 	AccountDiv,
 	LoginButton,
@@ -13,6 +14,8 @@ import {
 	SignUpButton,
 	SignUpDiv,
 } from './Login.style';
+import { loginUser } from '../../api/AuthApi';
+import localToken from '../../api/LocalToken';
 
 const Login = () => {
 	const navigate = useNavigate();
@@ -58,12 +61,38 @@ const Login = () => {
 	const nameEmailInputIsInValid = !emailIsValid && textIsTouched;
 	const namePasswordInputIsInValid = !passwordIsValid && textIsTouched;
 
+	const loginUserHandler = async (e) => {
+		e.preventDefault();
+
+		try {
+			const response = await loginUser(inputValue);
+
+			if (!response) return;
+
+			const { access_token } = response;
+
+			const saveToken = (token) => {
+				localToken.save(token);
+			};
+
+			if (access_token) {
+				saveToken(access_token);
+				navigate('/');
+			}
+		} catch (error) {
+			if (error.response.status === '403') {
+				console.error(error.message);
+			}
+			console.error(error.message);
+		}
+	};
+
 	return (
 		<LoginWrapper>
 			<AccountDiv>ACCOUNT</AccountDiv>
 			<LoginDiv>
 				<LoginTitleDiv>SIGN IN</LoginTitleDiv>
-				<LoginForm>
+				<LoginForm onSubmit={loginUserHandler}>
 					<LoginInput
 						placeholder="ID"
 						type="email"
@@ -76,12 +105,11 @@ const Login = () => {
 						placeholder="PASSWORD"
 						type="password"
 						name="password"
-						onChange={inputValueHandler}
-						isValid={namePasswordInputIsInValid}></LoginInput>
+						onChange={inputValueHandler}></LoginInput>
 					{namePasswordInputIsInValid && (
 						<Paragraph>비밀번호는 최소 6자리 이상이어야 합니다.</Paragraph>
 					)}
-					<LoginButton>SIGN IN</LoginButton>
+					<LoginButton type="submit">SIGN IN</LoginButton>
 				</LoginForm>
 				<SignUpDiv>
 					<div>Dont you have on account?</div>
