@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const LoginWrapper = styled.body`
+export const LoginWrapper = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -29,15 +29,17 @@ export const LoginTitleDiv = styled.div`
 	line-height: 39.69px;
 `;
 
-export const LoginInput = styled.input.attrs({
-	placeholderTextColor: '#6A6A6A',
-})`
+export const LoginInput = styled.input`
 	width: 427px;
 	height: 40px;
 	margin-bottom: 16px;
 	border: 1px solid #434343;
 	padding-left: 16px;
 	font-size: 16px;
+
+	::placeholder {
+		color: #6a6a6a;
+	}
 `;
 
 export const LoginForm = styled.form`

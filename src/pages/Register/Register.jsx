@@ -4,11 +4,6 @@ import SnsIcon from '../snsIcon/SnsIcon';
 import {
 	AccountDiv,
 	Paragraph,
-	ProfileImg,
-	ProfileImgAltDiv,
-	ProfileImgDiv,
-	ProfileImgInput,
-	ProfileImgLabel,
 	RegisterButton,
 	RegisterDiv,
 	RegisterForm,
@@ -17,20 +12,20 @@ import {
 	RegisterWrapper,
 	SnsIconDiv,
 } from './Register.style';
+import { registerUser } from '../../api/AuthApi';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
 	const [emailIsValid, setEmailIsValid] = useState(false);
 	const [passwordIsValid, setPasswordIsValid] = useState(false);
 	const [textIsTouched, setTextIsTouched] = useState(false);
-	const [confirmedPassword, setConfirmedPassword] = useState('');
-	const [passwordsMatch, setPasswordsMatch] = useState(true);
-	const [imgFile, setImgFile] = useState('');
-	const imgRef = useRef();
 
 	const [inputValue, setInputValue] = useState({
 		name: null,
 		email: '',
 		password: '',
+		pwdck: '',
+		mobile: '',
 	});
 
 	const isPasswordValid = (password) => {
@@ -44,16 +39,13 @@ const Register = () => {
 		const hasSpecialChar = /[!@#$%^&*()\-_=+[\]{};:'",<.>/?\\|]/.test(password);
 
 		const conditionsMet =
-			[hasUpperCase, hasLowerCase, hasDigit, hasSpecialChar].filter(Boolean)
-				.length >= 2;
-
+			hasSpecialChar && (hasUpperCase || hasLowerCase || hasDigit);
 		return conditionsMet;
 	};
 
 	const inputValueHandler = (e) => {
 		const { name, value } = e.target;
 		setInputValue({ ...inputValue, [name]: value });
-
 		setTextIsTouched(true);
 
 		if (name === 'email') {
@@ -76,33 +68,37 @@ const Register = () => {
 				setPasswordIsValid(false);
 			} else setPasswordIsValid(true);
 		}
-		if (name === 'confirmedPassword') {
-			setConfirmedPassword(value);
-		}
 	};
-
-	const saveImgFile = () => {
-		const file = imgRef.current.files[0];
-		const reader = new FileReader();
-		reader.readAsDataURL(file);
-		reader.onloadend = () => {
-			setImgFile(reader.result);
-		};
-	};
-
-	const defaultUserImage = '/assets/icons/icon-user.png';
 
 	const nameEmailInputIsInValid = !emailIsValid && textIsTouched;
 	const namePasswordInputIsInValid = !passwordIsValid && textIsTouched;
 	const nameConfirmedPasswordIsInvalid =
-		textIsTouched && confirmedPassword !== inputValue.password;
+		textIsTouched && inputValue.pwdck !== inputValue.password;
+
+	const navigate = useNavigate();
+
+	const registerUserHandler = async (e) => {
+		e.preventDefault();
+		try {
+			const response = await registerUser(inputValue);
+
+			if (response.status === '200' || response.status === '201') {
+				navigate('/login');
+			}
+		} catch (error) {
+			if (error.response.status === '406') {
+				alert(error.message);
+			}
+			console.error(error.message);
+		}
+	};
 
 	return (
 		<RegisterWrapper>
 			<AccountDiv>ACCOUNT</AccountDiv>
 			<RegisterDiv>
 				<RegisterTitleDiv>SIGN UP</RegisterTitleDiv>
-				<RegisterForm>
+				<RegisterForm onSubmit={registerUserHandler}>
 					<RegisterInput
 						type="text"
 						placeholder="NAME"
@@ -111,15 +107,14 @@ const Register = () => {
 					<RegisterInput
 						type="tel"
 						placeholder="PHONE NUMBER"
-						name="phoneNumber"
+						name="mobile"
 						onChange={inputValueHandler}></RegisterInput>
 
 					<RegisterInput
 						placeholder="ID"
 						type="email"
 						name="email"
-						onChange={inputValueHandler}
-						isValid={nameEmailInputIsInValid}></RegisterInput>
+						onChange={inputValueHandler}></RegisterInput>
 					{nameEmailInputIsInValid && (
 						<Paragraph>정확하지 않은 이메일입니다.</Paragraph>
 					)}
@@ -127,8 +122,7 @@ const Register = () => {
 						placeholder="PASSWORD"
 						type="password"
 						name="password"
-						onChange={inputValueHandler}
-						isValid={namePasswordInputIsInValid}></RegisterInput>
+						onChange={inputValueHandler}></RegisterInput>
 					{namePasswordInputIsInValid && (
 						<Paragraph>
 							비밀번호는 영문, 숫자, 특수문자 중 2개 이상을 조합하여 최소 6자리
@@ -138,13 +132,12 @@ const Register = () => {
 					<RegisterInput
 						placeholder="VERIFY PASSWORD"
 						type="password"
-						name="confirmedPassword"
-						onChange={inputValueHandler}
-						isValid={nameConfirmedPasswordIsInvalid}></RegisterInput>
+						name="pwdck"
+						onChange={inputValueHandler}></RegisterInput>
 					{nameConfirmedPasswordIsInvalid && (
 						<Paragraph>비밀번호가 일치하지 않습니다.</Paragraph>
 					)}
-					<RegisterButton>SIGN UP</RegisterButton>
+					<RegisterButton type="submit">SIGN UP</RegisterButton>
 				</RegisterForm>
 				<SnsIconDiv>
 					<SnsIcon></SnsIcon>
