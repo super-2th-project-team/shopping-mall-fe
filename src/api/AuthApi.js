@@ -25,3 +25,15 @@ export const loginUser = async (body) => {
 		password: body.password,
 	});
 };
+
+export const logoutUser = async () => {
+	return await authApi.post(LOG_OUT);
+};
+
+export const signOutUser = async (body) => {
+	return await authApi.post(SIGN_OUT, {
+		mobile: body.mobile,
+		email: body.email,
+		password: body.password,
+	});
+};

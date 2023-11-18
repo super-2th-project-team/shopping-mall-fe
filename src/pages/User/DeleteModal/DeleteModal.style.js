@@ -89,3 +89,9 @@ export const CloseButton = styled.button`
 		cursor: pointer;
 	}
 `;
+
+export const Paragraph = styled.p`
+	width: 90%;
+	text-align: left;
+	font-size: 12px;
+`;

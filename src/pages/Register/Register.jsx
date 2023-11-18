@@ -16,9 +16,10 @@ import { registerUser } from '../../api/AuthApi';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+	const [isSignUpClicked, setIsSignUpClicked] = useState(false);
 	const [emailIsValid, setEmailIsValid] = useState(false);
 	const [passwordIsValid, setPasswordIsValid] = useState(false);
-	const [textIsTouched, setTextIsTouched] = useState(false);
+	const [textIsTouched, setTextIsTouched] = useState(false || isSignUpClicked);
 
 	const [inputValue, setInputValue] = useState({
 		name: null,
@@ -70,28 +71,30 @@ const Register = () => {
 		}
 	};
 
-	const nameEmailInputIsInValid = !emailIsValid && textIsTouched;
-	const namePasswordInputIsInValid = !passwordIsValid && textIsTouched;
-	const nameConfirmedPasswordIsInvalid =
-		textIsTouched && inputValue.pwdck !== inputValue.password;
-
 	const navigate = useNavigate();
 
 	const registerUserHandler = async (e) => {
 		e.preventDefault();
 		try {
 			const response = await registerUser(inputValue);
-
-			if (response.status === '200' || response.status === '201') {
-				navigate('/login');
-			}
 		} catch (error) {
 			if (error.response.status === '406') {
 				alert(error.message);
 			}
 			console.error(error.message);
+		} finally {
+			setIsSignUpClicked(true);
 		}
 	};
+
+	const nameEmailInputIsInValid =
+		!emailIsValid && textIsTouched && isSignUpClicked;
+	const namePasswordInputIsInValid =
+		!passwordIsValid && textIsTouched && isSignUpClicked;
+	const nameConfirmedPasswordIsInvalid =
+		textIsTouched &&
+		inputValue.pwdck !== inputValue.password &&
+		isSignUpClicked;
 
 	return (
 		<RegisterWrapper>
@@ -112,7 +115,7 @@ const Register = () => {
 
 					<RegisterInput
 						placeholder="ID"
-						type="email"
+						type="text"
 						name="email"
 						onChange={inputValueHandler}></RegisterInput>
 					{nameEmailInputIsInValid && (

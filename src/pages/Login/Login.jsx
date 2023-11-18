@@ -22,9 +22,10 @@ const Login = () => {
 	const onRegisterClick = () => {
 		navigate('/register');
 	};
+	const [isSignInClicked, setIsSignInClicked] = useState(false);
 	const [emailIsValid, setEmailIsValid] = useState(false);
 	const [passwordIsValid, setPasswordIsValid] = useState(false);
-	const [textIsTouched, setTextIsTouched] = useState(false);
+	const [textIsTouched, setTextIsTouched] = useState(false || isSignInClicked);
 	const [inputValue, setInputValue] = useState({
 		email: '',
 		password: '',
@@ -58,9 +59,6 @@ const Login = () => {
 		}
 	};
 
-	const nameEmailInputIsInValid = !emailIsValid && textIsTouched;
-	const namePasswordInputIsInValid = !passwordIsValid && textIsTouched;
-
 	const loginUserHandler = async (e) => {
 		e.preventDefault();
 
@@ -84,8 +82,16 @@ const Login = () => {
 				console.error(error.message);
 			}
 			console.error(error.message);
+		} finally {
+			// 로그인 시도 후에 isSignInClicked를 true로 설정
+			setIsSignInClicked(true);
 		}
 	};
+
+	const nameEmailInputIsInValid =
+		!emailIsValid && textIsTouched && isSignInClicked;
+	const namePasswordInputIsInValid =
+		!passwordIsValid && textIsTouched && isSignInClicked;
 
 	return (
 		<LoginWrapper>
@@ -95,7 +101,7 @@ const Login = () => {
 				<LoginForm onSubmit={loginUserHandler}>
 					<LoginInput
 						placeholder="ID"
-						type="email"
+						type="text"
 						name="email"
 						onChange={inputValueHandler}></LoginInput>
 					{nameEmailInputIsInValid && (
