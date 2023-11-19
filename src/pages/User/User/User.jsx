@@ -26,10 +26,14 @@ import {
 	UserRightItemDiv,
 	UserWrapper,
 } from './User.style';
+import { useNavigate } from 'react-router-dom';
+import { logoutUser } from '../../../api/AuthApi';
+import localToken from '../../../api/LocalToken';
 
 const User = () => {
 	const [imgFile, setImgFile] = useState('');
 	const imgRef = useRef();
+	const navigate = useNavigate();
 
 	const saveImgFile = () => {
 		const file = imgRef.current.files[0];
@@ -59,6 +63,16 @@ const User = () => {
 
 	const addressOnClickButton = () => {
 		addressSetIsOpen(true);
+	};
+
+	const logoutHandler = async () => {
+		try {
+			await logoutUser();
+			localToken.remove();
+			navigate('/');
+		} catch (error) {
+			console.error('Logout failed:', error.message);
+		}
 	};
 
 	const defaultUserImage = '/assets/icons/icon-user.png';
@@ -97,9 +111,7 @@ const User = () => {
 						</UserNamePhotoDiv>
 						<UserLeftItemDiv>
 							<UserItemTitleDiv>address</UserItemTitleDiv>
-							<UserItemContentDiv>
-								대한민국 서울특별시 청와대 주소 123-456
-							</UserItemContentDiv>
+							<UserItemContentDiv></UserItemContentDiv>
 							<ModalDiv onClick={addressOnClickButton}>change</ModalDiv>
 							{addressIsOpen && (
 								<AddressChangeModal
@@ -112,12 +124,12 @@ const User = () => {
 						</UserLeftItemDiv>
 						<UserLeftItemDiv>
 							<UserItemTitleDiv>e-mail</UserItemTitleDiv>
-							<UserItemContentDiv>asdasd@asdasd.com</UserItemContentDiv>
-							<ModalDiv>change</ModalDiv>
+							<UserItemContentDiv></UserItemContentDiv>
+							<ModalDiv></ModalDiv>
 						</UserLeftItemDiv>
 						<UserLeftItemDiv>
 							<UserItemTitleDiv>phone number</UserItemTitleDiv>
-							<UserItemContentDiv>010-000-00000</UserItemContentDiv>
+							<UserItemContentDiv></UserItemContentDiv>
 							<ModalDiv onClick={telOnClickButton}>change</ModalDiv>
 							{telIsOpen && (
 								<TelChangeModal
@@ -145,14 +157,11 @@ const User = () => {
 					<UserItemDiv>
 						<UserRightItemDiv>
 							<div>name</div>
-							<div>조영상</div>
+							<div></div>
 						</UserRightItemDiv>
 						<UserRightItemDiv>
 							<div>성별</div>
-							<GenderDiv>
-								<div>남</div>
-								<div>여</div>
-							</GenderDiv>
+							<GenderDiv></GenderDiv>
 						</UserRightItemDiv>
 						<UserRightItemDiv>
 							<div>ONLY SELLER</div>
@@ -162,7 +171,7 @@ const User = () => {
 				</UserContent>
 				<UserContent>
 					<div>
-						<SignOutDiv>sign out</SignOutDiv>
+						<SignOutDiv onClick={logoutHandler}>log out</SignOutDiv>
 						<DeleteYourAccountDiv onClick={deleteOnClickButton}>
 							Delete Your account
 						</DeleteYourAccountDiv>

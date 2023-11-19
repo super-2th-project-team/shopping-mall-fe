@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+
 import {
 	AccountDiv,
 	LoginButton,
@@ -13,15 +14,18 @@ import {
 	SignUpButton,
 	SignUpDiv,
 } from './Login.style';
+import { loginUser } from '../../api/AuthApi';
+import localToken from '../../api/LocalToken';
 
 const Login = () => {
 	const navigate = useNavigate();
 	const onRegisterClick = () => {
 		navigate('/register');
 	};
+	const [isSignInClicked, setIsSignInClicked] = useState(false);
 	const [emailIsValid, setEmailIsValid] = useState(false);
 	const [passwordIsValid, setPasswordIsValid] = useState(false);
-	const [textIsTouched, setTextIsTouched] = useState(false);
+	const [textIsTouched, setTextIsTouched] = useState(false || isSignInClicked);
 	const [inputValue, setInputValue] = useState({
 		email: '',
 		password: '',
@@ -55,18 +59,49 @@ const Login = () => {
 		}
 	};
 
-	const nameEmailInputIsInValid = !emailIsValid && textIsTouched;
-	const namePasswordInputIsInValid = !passwordIsValid && textIsTouched;
+	const loginUserHandler = async (e) => {
+		e.preventDefault();
+
+		try {
+			const response = await loginUser(inputValue);
+
+			if (!response) return;
+
+			const { access_token } = response;
+
+			const saveToken = (token) => {
+				localToken.save(token);
+			};
+
+			if (access_token) {
+				saveToken(access_token);
+				navigate('/');
+			}
+		} catch (error) {
+			if (error.response.status === '403') {
+				console.error(error.message);
+			}
+			console.error(error.message);
+		} finally {
+			// 로그인 시도 후에 isSignInClicked를 true로 설정
+			setIsSignInClicked(true);
+		}
+	};
+
+	const nameEmailInputIsInValid =
+		!emailIsValid && textIsTouched && isSignInClicked;
+	const namePasswordInputIsInValid =
+		!passwordIsValid && textIsTouched && isSignInClicked;
 
 	return (
 		<LoginWrapper>
 			<AccountDiv>ACCOUNT</AccountDiv>
 			<LoginDiv>
 				<LoginTitleDiv>SIGN IN</LoginTitleDiv>
-				<LoginForm>
+				<LoginForm onSubmit={loginUserHandler}>
 					<LoginInput
 						placeholder="ID"
-						type="email"
+						type="text"
 						name="email"
 						onChange={inputValueHandler}></LoginInput>
 					{nameEmailInputIsInValid && (
@@ -76,12 +111,11 @@ const Login = () => {
 						placeholder="PASSWORD"
 						type="password"
 						name="password"
-						onChange={inputValueHandler}
-						isValid={namePasswordInputIsInValid}></LoginInput>
+						onChange={inputValueHandler}></LoginInput>
 					{namePasswordInputIsInValid && (
 						<Paragraph>비밀번호는 최소 6자리 이상이어야 합니다.</Paragraph>
 					)}
-					<LoginButton>SIGN IN</LoginButton>
+					<LoginButton type="submit">SIGN IN</LoginButton>
 				</LoginForm>
 				<SignUpDiv>
 					<div>Dont you have on account?</div>

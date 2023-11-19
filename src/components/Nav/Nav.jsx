@@ -9,13 +9,26 @@ import {
 	UserContent,
 } from './Nav.style';
 import { BsCart4 } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
 
 const Nav = () => {
+	const navigate = useNavigate();
+	const onLoginClick = () => {
+		navigate('/login');
+	};
+	const onLogoClick = () => {
+		navigate('/');
+	};
+
 	return (
 		<Header>
 			<HeaderNav>
 				<div>
-					<img src="/assets/main-logo.svg" alt="mainLogo" />
+					<img
+						src="/assets/main-logo.svg"
+						alt="mainLogo"
+						onClick={onLogoClick}
+					/>
 					<NavUl>
 						<NavLi>NEW</NavLi>
 						<NavLi>
@@ -60,7 +73,7 @@ const Nav = () => {
 					</NavUl>
 				</div>
 				<UserContent>
-					<span>SIGN IN</span>
+					<span onClick={onLoginClick}>SIGN IN</span>
 					<BsCart4 color="var(--color-main-text)" size={20} />
 				</UserContent>
 			</HeaderNav>
