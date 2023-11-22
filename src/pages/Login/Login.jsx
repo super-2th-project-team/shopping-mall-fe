@@ -13,6 +13,8 @@ import {
 	SignUpButton,
 	SignUpDiv,
 } from './Login.style';
+import { loginUser } from '../../api/authApi';
+import localToken from '../../api/LocalToken';
 
 const Login = () => {
 	const navigate = useNavigate();
@@ -58,12 +60,28 @@ const Login = () => {
 	const nameEmailInputIsInValid = !emailIsValid && textIsTouched;
 	const namePasswordInputIsInValid = !passwordIsValid && textIsTouched;
 
+	const loginUserHandler = async (e) => {
+		e.preventDefault();
+
+		try {
+			const response = await loginUser(inputValue);
+
+			console.log(response);
+
+			const { access_token } = response;
+
+			localToken.save(access_token);
+		} catch (error) {
+			console.error(error.message);
+		}
+	};
+
 	return (
 		<LoginWrapper>
 			<AccountDiv>ACCOUNT</AccountDiv>
 			<LoginDiv>
 				<LoginTitleDiv>SIGN IN</LoginTitleDiv>
-				<LoginForm>
+				<LoginForm onSubmit={loginUserHandler}>
 					<LoginInput
 						placeholder="ID"
 						type="email"
@@ -81,7 +99,7 @@ const Login = () => {
 					{namePasswordInputIsInValid && (
 						<Paragraph>비밀번호는 최소 6자리 이상이어야 합니다.</Paragraph>
 					)}
-					<LoginButton>SIGN IN</LoginButton>
+					<LoginButton type="submit">SIGN IN</LoginButton>
 				</LoginForm>
 				<SignUpDiv>
 					<div>Dont you have on account?</div>
