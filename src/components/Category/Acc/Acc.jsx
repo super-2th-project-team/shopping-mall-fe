@@ -6,21 +6,21 @@ import {
 import PaginationBar from '../../Pagination/PaginationBar';
 import ProductsBox from '../../Pagination/ProductsBox/ProductsBox';
 
-const Outer = ({ type, subType }) => {
+const Acc = ({ data, type, subType }) => {
 	let titleContent;
 
-	if (type) {
+	if (type === 'acc') {
 		titleContent = (
 			<>
 				<p>HOME &nbsp;&gt;&nbsp;</p>
-				<h2>OUTER</h2>
+				<h2>ACC</h2>
 			</>
 		);
-	} else if (subType) {
+	} else {
 		titleContent = (
 			<>
 				<p>HOME &nbsp;&gt;&nbsp; </p>
-				<p>OUTER &nbsp;&gt;&nbsp; </p>
+				<p>ACC &nbsp;&gt;&nbsp; </p>
 				{subType && <h2>{subType.toUpperCase()}</h2>}
 			</>
 		);
@@ -37,4 +37,4 @@ const Outer = ({ type, subType }) => {
 	);
 };
 
-export default Outer;
+export default Acc;

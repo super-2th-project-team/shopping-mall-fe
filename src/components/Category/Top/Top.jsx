@@ -6,22 +6,22 @@ import {
 import PaginationBar from '../../Pagination/PaginationBar';
 import ProductsBox from '../../Pagination/ProductsBox/ProductsBox';
 
-const Outer = ({ type, subType }) => {
+const Top = ({ data, type, subType }) => {
 	let titleContent;
 
-	if (type) {
+	if (type === 'top') {
 		titleContent = (
 			<>
 				<p>HOME &nbsp;&gt;&nbsp;</p>
-				<h2>OUTER</h2>
+				<h2>TOP</h2>
 			</>
 		);
 	} else if (subType) {
 		titleContent = (
 			<>
 				<p>HOME &nbsp;&gt;&nbsp; </p>
-				<p>OUTER &nbsp;&gt;&nbsp; </p>
-				{subType && <h2>{subType.toUpperCase()}</h2>}
+				<p>TOP &nbsp;&gt;&nbsp; </p>
+				<h2>{subType.toUpperCase()}</h2>
 			</>
 		);
 	}
@@ -37,4 +37,4 @@ const Outer = ({ type, subType }) => {
 	);
 };
 
-export default Outer;
+export default Top;
