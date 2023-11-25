@@ -27,7 +27,7 @@ const CartSummary = ({ children, btnText, checkedItemsId, products }) => {
 			{children}
 			<CartSummaryOptionDiv>
 				<p>Subtotal</p>
-				<em>₩{originPrice.toLocaleString()}</em>
+				<em>₩{originPrice ? originPrice.toLocaleString() : 0}</em>
 			</CartSummaryOptionDiv>
 			<CartSummaryOptionDiv>
 				<p>Delivery cost</p>
@@ -35,7 +35,9 @@ const CartSummary = ({ children, btnText, checkedItemsId, products }) => {
 			</CartSummaryOptionDiv>
 			<CartSummaryOptionDiv>
 				<p>Discount</p>
-				<em>₩{(originPrice - totalPrice).toLocaleString()}</em>
+				<em>
+					₩{originPrice ? (originPrice - totalPrice).toLocaleString() : 0}
+				</em>
 			</CartSummaryOptionDiv>
 			<CartSummaryOptionDiv>
 				<p style={{ fontWeight: 'bold' }}>TOTAL</p>
