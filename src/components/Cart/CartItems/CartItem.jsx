@@ -1,26 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import CartItemDesc from './CartItemDesc/CartItemDesc';
 import {
-	ItemDiv,
 	ItemImgDiv,
 	ItemHandleDiv,
 	ItemCheckDiv,
 	ItemLi,
 } from './CartItem.style';
 import Button from './../CartUI/Button';
-import { FiCheck } from 'react-icons/fi';
 import { useLocation } from 'react-router-dom';
-import { CartItemCheckInput } from '../../../pages/Cart/Cart.style';
 import CheckboxInput from '../CartUI/CheckboxInput';
+import { useDispatch, useSelector } from 'react-redux';
+import { CartBtn } from '../CartUI/Button.style';
+import { fetchProduct } from '../../../slice/productSlice';
+import CartItemChangingOpitons from './CartItemChangingOptions/CartItemChangingOpitons';
 
 const CartItem = ({
 	item,
-	removeItemHandler,
 	checkedSingleItemHandler,
 	checkedItemsId,
 	cartItem,
 }) => {
 	const location = useLocation();
+	const dispatch = useDispatch();
+	const [isClicked, setIsClicked] = useState(false);
+	const [optionChanged, setOptionChanged] = useState(false);
+
+	useEffect(() => {
+		dispatch(fetchProduct());
+		console.log('changed');
+	}, [optionChanged]); // 옵션 변경됐을 때 다시 불러올 수 있도록
+	const products = useSelector((state) => state.product);
+
+	const optionChangeHandler = () => {
+		setIsClicked(!isClicked);
+	};
+
+	const productIdentifyItem = products.find(
+		(product) => product.productId === item.productId,
+	);
 
 	return (
 		<ItemLi>
@@ -34,18 +51,34 @@ const CartItem = ({
 					/>
 				)}
 				<ItemImgDiv>
-					<img src={item.img} alt="이미지" />
+					<img
+						src={productIdentifyItem && productIdentifyItem.thumb_nail}
+						alt="이미지"
+					/>
 				</ItemImgDiv>
 			</ItemCheckDiv>
-			<CartItemDesc item={item} />
+			<CartItemDesc item={item} productIdentifyItem={productIdentifyItem}>
+				{isClicked && (
+					<CartItemChangingOpitons
+						cartProductIdx={item.cartProductIdx}
+						optionChangeHandler={optionChangeHandler}
+						setOptionChanged={setOptionChanged}
+						optionChanged={optionChanged}
+					/>
+				)}
+			</CartItemDesc>
 			<ItemHandleDiv>
-				<p>₩{item.price * item.quantity}</p>
-				<Button
-					size="120px"
-					itemId={item.id}
-					removeItemHandler={removeItemHandler}>
-					Remove
-				</Button>
+				<p>₩{(item.price * item.quantity).toLocaleString('ko-KR')}</p>
+				<div style={{ textAlign: 'right' }}>
+					{!isClicked && (
+						<CartBtn
+							style={{ marginBottom: '4px' }}
+							onClick={optionChangeHandler}>
+							옵션변경
+						</CartBtn>
+					)}
+					<Button itemId={item.productId}>삭제하기</Button>
+				</div>
 			</ItemHandleDiv>
 		</ItemLi>
 	);
