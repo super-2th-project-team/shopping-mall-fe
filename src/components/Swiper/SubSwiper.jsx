@@ -6,7 +6,9 @@ import { CategoryTitle, SubItemBox, SubSwiperContainer } from './Swiper.style';
 import { MoreBtn } from '../Main/Main.style';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getProducts } from '../../api/productApi';
+import { SET_PRODUCTS } from '../../slice/productSlice';
 
 const ProductItem = ({ price, itemTitle, thumbnail }) => (
 	<SubItemBox>
@@ -27,6 +29,11 @@ const SubSwiper = ({ dataTitle }) => {
 
 	const clickTypeNewHandler = () => {
 		const url = '/products/?type=new';
+		navigate(url);
+	};
+
+	const clickProductItem = (product_id) => {
+		const url = `/product/${product_id}`;
 		navigate(url);
 	};
 
@@ -54,7 +61,10 @@ const SubSwiper = ({ dataTitle }) => {
 				className="swiper">
 				<div className="swiper-wrapper">
 					{products.map((product) => (
-						<SwiperSlide key={product.productId} className="swiper-slide">
+						<SwiperSlide
+							key={product.productId}
+							className="swiper-slide"
+							onClick={() => clickProductItem(product.productId)}>
 							<ProductItem
 								itemTitle={product.name}
 								thumbnail={product.productImg[1]}
