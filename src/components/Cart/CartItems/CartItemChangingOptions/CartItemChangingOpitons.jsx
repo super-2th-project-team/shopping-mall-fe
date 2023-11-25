@@ -7,12 +7,7 @@ import {
 import { CartBtn } from '../../CartUI/Button.style';
 import { updateCartProduct } from '../../../../api/cartApi';
 
-const CartItemChangingOpitons = ({
-	optionChangeHandler,
-	cartProductIdx,
-	setOptionChanged,
-	optionChanged,
-}) => {
+const CartItemChangingOpitons = ({ optionChangeHandler, cartProductIdx }) => {
 	const [selectedOptions, setSelectedOptions] = useState({
 		color: '',
 		size: '',
@@ -27,7 +22,6 @@ const CartItemChangingOpitons = ({
 		e.preventDefault();
 		updateCartProduct(cartProductIdx, selectedOptions);
 		optionChangeHandler();
-		setOptionChanged(!optionChanged);
 	};
 
 	const singleOptionHandler = (e) => {

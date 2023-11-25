@@ -4,8 +4,8 @@ import { getCartProducts, getMockCart } from '../api/cartApi';
 export const setInitialData = () => {
 	return async (dispatch) => {
 		try {
-			// const data = await getCartProducts();
-			const data = await getMockCart();
+			const data = await getCartProducts();
+			// const data = await getMockCart();
 			dispatch(GET_INITIAL_ITEMS(data));
 		} catch (error) {
 			console.error('error setting initial data', error);
