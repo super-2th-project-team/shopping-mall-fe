@@ -6,8 +6,11 @@ import {
 } from './CartItemChangingOptions.style';
 import { CartBtn } from '../../CartUI/Button.style';
 import { updateCartProduct } from '../../../../api/cartApi';
+import { useDispatch } from 'react-redux';
+import { setInitialData } from '../../../../slice/cartSlice';
 
 const CartItemChangingOpitons = ({ optionChangeHandler, cartProductIdx }) => {
+	const dispatch = useDispatch();
 	const [selectedOptions, setSelectedOptions] = useState({
 		color: '',
 		size: '',
@@ -18,10 +21,15 @@ const CartItemChangingOpitons = ({ optionChangeHandler, cartProductIdx }) => {
 		quantityOptions.push(i);
 	}
 
-	const optionSubmitHandler = (e) => {
+	const optionSubmitHandler = async (e) => {
 		e.preventDefault();
-		updateCartProduct(cartProductIdx, selectedOptions);
-		optionChangeHandler();
+		try {
+			await updateCartProduct(cartProductIdx, selectedOptions);
+			dispatch(setInitialData());
+			optionChangeHandler();
+		} catch (error) {
+			console.error('Error updating cart product:', error);
+		}
 	};
 
 	const singleOptionHandler = (e) => {
