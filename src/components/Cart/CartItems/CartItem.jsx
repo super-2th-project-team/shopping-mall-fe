@@ -21,6 +21,7 @@ const CartItem = ({
 }) => {
 	const location = useLocation();
 	const [isClicked, setIsClicked] = useState(false);
+	const orderLocation = location.pathname.includes('order');
 
 	const optionChangeHandler = () => {
 		setIsClicked(!isClicked);
@@ -33,7 +34,7 @@ const CartItem = ({
 	return (
 		<ItemLi>
 			<ItemCheckDiv>
-				{!location.pathname.includes('order') && (
+				{!orderLocation && (
 					<CheckboxInput
 						item={item}
 						checkedSingleItemHandler={checkedSingleItemHandler}
@@ -59,7 +60,7 @@ const CartItem = ({
 			<ItemHandleDiv>
 				<p>₩{(item.price * item.quantity).toLocaleString('ko-KR')}</p>
 				<div style={{ textAlign: 'right' }}>
-					{!isClicked && (
+					{!isClicked && !orderLocation && (
 						<CartBtn
 							style={{ marginBottom: '4px' }}
 							onClick={optionChangeHandler}>
